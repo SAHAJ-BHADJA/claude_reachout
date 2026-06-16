@@ -1,0 +1,29 @@
+# ===== Secrets — never commit =====
+.env
+.env.*
+!.env.example
+RENDER_ENV.txt
+.secrets/
+*.token.json
+gcp-oauth*.json
+
+# ===== Personal data — never commit (public repo) =====
+master_resume_data.json
+master_data.json
+
+# ===== Local data / build =====
+*.db
+*.db-wal
+*.db-shm
+exports/
+*.xlsx
+
+# ===== Python =====
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ===== OS =====
+.DS_Store
+Thumbs.db

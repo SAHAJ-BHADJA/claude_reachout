@@ -1,0 +1,48 @@
+{
+  "name": "Sahaj Bhadja",
+  "email": "bhadja@usc.edu",
+  "phone": "+1-000-000-0000",
+  "location": "Los Angeles, CA",
+  "linkedin": "https://linkedin.com/in/yourhandle",
+  "github": "https://github.com/yourhandle",
+  "portfolio": "https://your-portfolio.com",
+  "headline": "MS Computer Science @ USC | Software / ML Engineer",
+  "summary": "One short paragraph about who you are, what you care about, and the kind of teams/problems you want to work on.",
+  "skills": [
+    "Python", "TypeScript", "React", "FastAPI", "PostgreSQL",
+    "AWS", "Docker", "LLMs / RAG", "Distributed Systems"
+  ],
+  "experiences": [
+    {
+      "company": "Example Corp",
+      "title": "Software Engineer Intern",
+      "start": "2024-05",
+      "end": "2024-08",
+      "highlights": [
+        "Shipped X that improved Y by Z%.",
+        "Built a service handling N requests/day."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Project Name",
+      "tech": ["Python", "FastAPI", "LLMs"],
+      "description": "What it does and the impact/result.",
+      "link": "https://github.com/yourhandle/project"
+    }
+  ],
+  "education": [
+    {
+      "school": "University of Southern California",
+      "degree": "M.S. Computer Science",
+      "start": "2024-08",
+      "end": "2026-05"
+    }
+  ],
+  "preferences": {
+    "roles": ["Software Engineer", "Machine Learning Engineer"],
+    "interests": ["applied AI", "developer tools", "infrastructure"],
+    "tone": "warm, specific, confident, not salesy"
+  }
+}

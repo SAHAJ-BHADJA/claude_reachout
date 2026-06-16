@@ -1,0 +1,46 @@
+# Render blueprint. On Render: New → Blueprint → pick this repo.
+# Set the secret env vars in the dashboard (sync:false) — never in git.
+# Add your resume as a Render "Secret File" at /etc/secrets/master_resume_data.json
+# (Dashboard → your service → Environment → Secret Files).
+services:
+  - type: web
+    name: claude-reachout
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL          # Supabase Postgres connection URI
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_MODEL_NAME
+        value: claude-opus-4-5-20251101
+      - key: HUNTER_API_KEY
+        sync: false
+      - key: HUNTER_FETCH
+        value: "10"
+      - key: APOLLO_API_KEYS
+        sync: false
+      - key: APIFY_TOKEN
+        sync: false
+      - key: APIFY_ACTOR_ID
+        value: IoSHqwTR9YGhzccez
+      - key: EMAIL_TOP_N
+        value: "6"
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI    # https://<your-app>.onrender.com/gmail/oauth/callback
+        sync: false
+      - key: GMAIL_SENDER_EMAIL
+        value: bhadja@usc.edu
+      - key: TRACKING_BASE_URL      # https://<your-app>.onrender.com
+        sync: false
+      - key: CRON_SECRET
+        sync: false
+      - key: MASTER_DATA_PATH       # Render Secret File path
+        value: /etc/secrets/master_resume_data.json
+      - key: SEND_TIMEZONE
+        value: America/Los_Angeles

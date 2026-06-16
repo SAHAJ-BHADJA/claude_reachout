@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JD → Outreach</title>
+<style>
+  :root{--bg:#f6f7f9;--card:#fff;--line:#e6e8ec;--ink:#1c2128;--mut:#6b7280;
+        --acc:#2f6bff;--ok:#1aa260;--warn:#b9770a;--bad:#d23b3b;--soft:#eef2ff;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:14px}
+  header{background:var(--card);border-bottom:1px solid var(--line);padding:0 24px;
+         display:flex;align-items:center;gap:20px;height:56px;position:sticky;top:0;z-index:5}
+  header b{font-size:15px}
+  .tabs{display:flex;gap:4px;margin-left:8px}
+  .tab{padding:8px 14px;border-radius:8px;cursor:pointer;color:var(--mut);font-weight:600}
+  .tab.on{background:var(--soft);color:var(--acc)}
+  .spacer{flex:1}
+  .counter{font-size:12px;color:var(--mut)}
+  .wrap{max-width:980px;margin:24px auto;padding:0 20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px}
+  .step{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--acc);text-transform:uppercase;margin-bottom:10px}
+  h3{margin:0 0 14px;font-size:16px}
+  textarea{width:100%;min-height:150px;border:1px solid var(--line);border-radius:10px;padding:12px;
+           font-family:inherit;font-size:13px;resize:vertical}
+  input[type=text],select{border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:13px;font-family:inherit}
+  button{background:var(--acc);color:#fff;border:0;border-radius:9px;padding:10px 16px;font-weight:600;cursor:pointer;font-size:13px}
+  button.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  button.sm{padding:6px 10px;font-size:12px}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .between{justify-content:space-between}
+  .toggle{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .toggle div{padding:9px 20px;cursor:pointer;color:var(--mut);font-weight:600}
+  .toggle div.on{background:var(--acc);color:#fff}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+  th{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.4px;font-weight:600}
+  .muted{color:var(--mut);font-size:12px}
+  .pill{font-size:11px;padding:2px 9px;border-radius:20px;background:#eef1f5;color:#555}
+  .pill.alum{background:#fff5e6;color:#b9770a}
+  .banner{padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:10px}
+  .b-warn{background:#fff7e6;border:1px solid #ffe2a8;color:#8a5a00}
+  .b-ok{background:#e9f8ef;border:1px solid #b6e6c9;color:#11703f}
+  .hide{display:none}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .prev{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fafbfc;min-height:220px;font-size:13px;line-height:1.5}
+  .tabsm{display:flex;gap:6px;margin-bottom:8px}
+  .tabsm span{font-size:12px;padding:5px 10px;border-radius:7px;cursor:pointer;background:#eef1f5;color:#555}
+  .tabsm span.on{background:var(--acc);color:#fff}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
+  a{color:var(--acc)}
+  .uploadbox{border:1.5px dashed var(--line);border-radius:10px;padding:14px;text-align:center;color:var(--mut);font-size:12px}
+  details{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+  summary{cursor:pointer;font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <b>🎯 JD → Outreach</b>
+  <div class="tabs">
+    <div class="tab on" data-view="new">New outreach</div>
+    <div class="tab" data-view="dash">Dashboard</div>
+  </div>
+  <div class="spacer"></div>
+  <span class="counter" id="counter"></span>
+</header>
+
+<div class="wrap" id="view-new">
+  <div id="setup"></div>
+
+  <!-- STEP 1 -->
+  <div class="card">
+    <div class="step">Step 1 · Source &amp; JD</div>
+    <div class="row between">
+      <div class="row"><span class="muted">Source</span>
+        <div class="toggle" id="src"><div data-s="hunter" class="on">Hunter (free)</div><div data-s="apollo">Apollo (20)</div><div data-s="apify">Apify (30)</div></div>
+      </div>
+      <span class="muted" id="capnote"></span>
+    </div>
+    <p class="muted" style="margin:12px 0 6px">Paste the job description — leads are fetched automatically.</p>
+    <textarea id="jd" placeholder="Paste the full job description here…"></textarea>
+    <div class="row" style="margin-top:12px"><button id="findBtn">Find people →</button><span class="muted" id="findMsg"></span></div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card hide" id="leadsCard">
+    <div class="row between"><div class="step" style="margin:0">Step 2 · Leads</div>
+      <div class="row"><button class="ghost sm" id="exportBtn">⬇ Excel</button><button id="genBtn">Generate emails →</button></div>
+    </div>
+    <p class="muted" id="leadsMsg" style="margin:8px 0"></p>
+    <table id="leads"><thead><tr><th><input type="checkbox" id="selAll" title="Select all"></th><th>First</th><th>Last</th><th>Email</th><th>Position</th><th>Fit</th><th></th></tr></thead><tbody></tbody></table>
+    <p class="muted" id="selCount" style="margin-top:8px"></p>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card hide" id="reviewCard">
+    <div class="step">Step 3 · Review &amp; personalize</div>
+    <div class="grid2">
+      <div>
+        <div class="tabsm" id="ttabs"><span data-t="0" class="on">Main</span><span data-t="1">Follow-up 1</span><span data-t="2">Follow-up 2</span></div>
+        <input type="text" id="subj" placeholder="Subject" style="width:100%;margin-bottom:8px">
+        <textarea id="tbody" style="min-height:200px"></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="ghost sm" id="applyBtn">Apply edits</button>
+          <span class="muted">merge: {{first_name}} {{company}} {{connection}}</span>
+        </div>
+        <div style="margin-top:14px">
+          <input type="text" id="tweak" placeholder="Tell Claude how to change the emails… (optional)" style="width:100%">
+          <button class="ghost sm" id="regenBtn" style="margin-top:8px">↻ Regenerate with instruction</button>
+        </div>
+        <div style="margin-top:14px">
+          <label class="uploadbox" style="display:block">
+            <input type="file" id="resume" accept="application/pdf" style="display:none">
+            <span id="resumeLbl">📎 Upload resume for this company (sent on reply)</span>
+          </label>
+        </div>
+      </div>
+      <div>
+        <div class="row between" style="margin-bottom:8px">
+          <span class="muted">Preview as</span>
+          <select id="who"></select>
+        </div>
+        <div class="prev" id="prev"></div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:10px;background:#fafbfc">
+      <b>Schedule</b>
+      <p class="muted" style="margin:6px 0 10px">
+        Sends automatically <b>Mon–Fri, 9am–5pm (your timezone)</b>, ramping <b>10→40/day</b>,
+        ~7 min apart (deliverability-safe). Follow-ups are <b>replies in-thread</b>, sent only if no reply.
+      </p>
+      <div class="row">
+        <span class="muted">Follow-up 1 after</span><input id="fu1" type="number" value="3" min="1" style="width:56px">
+        <span class="muted">days · Follow-up 2 after</span><input id="fu2" type="number" value="4" min="1" style="width:56px">
+        <span class="muted">days</span>
+      </div>
+    </div>
+    <div class="row between" style="margin-top:16px">
+      <span class="muted" id="schedNote"></span>
+      <button id="releaseBtn">🚀 Release sequence</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="wrap hide" id="view-dash">
+  <div class="card">
+    <div class="row between"><h3 style="margin:0">Campaigns</h3>
+      <div class="row"><button class="ghost sm" id="tickBtn">▶ Run send tick</button><button class="ghost sm" id="refreshBtn">↻ Refresh</button></div>
+    </div>
+    <div id="campaigns" style="margin-top:12px"></div>
+  </div>
+  <div class="card">
+    <h3>Replies</h3>
+    <div id="replies"><p class="muted">No replies yet.</p></div>
+  </div>
+</div>
+
+<script>
+// Origin-proof: relative when served from the server; absolute when opened in a preview pane / file.
+const API_BASE = location.protocol.startsWith('http') ? '' : 'http://127.0.0.1:8000';
+const $=s=>document.querySelector(s), api=(u,o={})=>fetch(API_BASE+u,{headers:{'Content-Type':'application/json'},...o}).then(r=>r.json());
+let SOURCE='hunter', CAMPAIGN=null, LEADS=[], PREVIEW=null, TAB=0;
+
+// tabs
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  $('#view-new').classList.toggle('hide',t.dataset.view!=='new');
+  $('#view-dash').classList.toggle('hide',t.dataset.view!=='dash');
+  if(t.dataset.view==='dash') loadDashboard();
+});
+
+async function loadStatus(){
+  const s=await api('/api/status');
+  $('#counter').textContent=`Today: ${s.daily.sent_today}/${s.daily.cap} sent · ${s.daily.in_window?'in window':'outside window'}`;
+  let h='';
+  if(!s.master_data) h+=`<div class="banner b-warn">⚠ master data not found — set <b>MASTER_DATA_PATH</b> in .env to your master_resume_data.json.</div>`;
+  if(!s.gmail_authorized) h+=`<div class="banner b-warn">⚠ Gmail not connected — <a href="/gmail/auth" target="_blank">Connect Gmail</a> to send &amp; track.</div>`;
+  if(s.gmail_authorized&&s.master_data) h+=`<div class="banner b-ok">✓ Ready. Sending as ${s.sender}. Tracking via ${s.tracking_base_url}</div>`;
+  $('#setup').innerHTML=h;
+  $('#capnote').textContent=`Emails the top ${s.caps.email_top_n} per company`;
+}
+
+$('#src').onclick=e=>{const d=e.target.closest('[data-s]');if(!d)return;SOURCE=d.dataset.s;
+  document.querySelectorAll('#src div').forEach(x=>x.classList.toggle('on',x===d));};
+
+$('#findBtn').onclick=async()=>{
+  const jd=$('#jd').value.trim(); if(!jd){alert('Paste a JD');return;}
+  $('#findBtn').disabled=true; $('#findMsg').textContent='Parsing JD & fetching from '+SOURCE+'…';
+  try{
+    const r=await api('/api/search',{method:'POST',body:JSON.stringify({jd_text:jd,source:SOURCE})});
+    if(r.detail) throw new Error(r.detail);
+    CAMPAIGN=r.campaign_id; LEADS=r.contacts;
+    $('#leadsMsg').innerHTML=`${r.company||'company'} · ${r.total_found} found · emailing top ${r.to_email}`
+      + (r.note?`<br><span style="color:#b9770a">⚠ ${r.note}</span>`:'');
+    renderLeads(); $('#leadsCard').classList.remove('hide'); $('#findMsg').textContent='';
+  }catch(e){$('#findMsg').textContent='✕ '+e.message;}
+  $('#findBtn').disabled=false;
+};
+
+function renderLeads(){
+  const tb=$('#leads tbody'); tb.innerHTML='';
+  LEADS.forEach(c=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><input type="checkbox" data-id="${c.id}" ${c.selected?'checked':''}></td>
+      <td>${c.first_name||''}</td><td>${c.last_name||''}</td>
+      <td>${c.email||'<span class="muted">— locked —</span>'}</td>
+      <td>${c.title||''}</td><td><span class="pill">${c.relevance}</span></td>
+      <td>${c.alumni_note?`<span class="pill alum">${c.alumni_note}</span>`:''}</td>`;
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('input[type=checkbox]').forEach(cb=>cb.onchange=updateSel);
+  updateSel();
+}
+function updateSel(){
+  const boxes=[...document.querySelectorAll('#leads tbody input[type=checkbox]')];
+  const checked=boxes.filter(b=>b.checked);
+  const withEmail=checked.filter(b=>{const c=LEADS.find(x=>x.id==b.dataset.id);return c&&c.email;}).length;
+  $('#selCount').innerHTML=`${checked.length} selected · <b>${withEmail} have an unlocked email</b> (only those can be emailed)`;
+  const all=$('#selAll'); if(all) all.checked=boxes.length>0&&checked.length===boxes.length;
+}
+$('#selAll').onchange=e=>{document.querySelectorAll('#leads tbody input[type=checkbox]').forEach(c=>c.checked=e.target.checked);updateSel();};
+$('#exportBtn').onclick=()=>{if(CAMPAIGN)window.open(API_BASE+'/api/campaign/'+CAMPAIGN+'/export','_blank');};
+
+$('#genBtn').onclick=async()=>{
+  const ids=[...document.querySelectorAll('#leads input:checked')].map(x=>+x.dataset.id);
+  if(!ids.length){alert('Select at least one person');return;}
+  await api('/api/select',{method:'POST',body:JSON.stringify({campaign_id:CAMPAIGN,contact_ids:ids})});
+  $('#genBtn').disabled=true; $('#genBtn').textContent='Researching & writing…';
+  try{
+    const r=await api('/api/generate',{method:'POST',body:JSON.stringify({campaign_id:CAMPAIGN})});
+    if(r.detail) throw new Error(r.detail);
+    PREVIEW=r; renderReview(); $('#reviewCard').classList.remove('hide');
+    $('#reviewCard').scrollIntoView({behavior:'smooth'});
+  }catch(e){alert('Error: '+e.message);}
+  $('#genBtn').disabled=false; $('#genBtn').textContent='Generate emails →';
+};
+
+function tmpl(){return PREVIEW.templates;}
+function renderReview(){
+  const sel=$('#who'); sel.innerHTML='';
+  PREVIEW.people.forEach(p=>{const o=document.createElement('option');o.value=p.contact_id;o.textContent=p.name+' — '+(p.title||'');sel.appendChild(o);});
+  loadTab(); renderPrev();
+  $('#schedNote').textContent=`Follow-ups are replies in-thread; sent only if no reply. ${PREVIEW.people.length} recipients.`;
+}
+function loadTab(){
+  const t=tmpl();
+  $('#subj').value=t.subject||'';
+  $('#tbody').value = TAB===0 ? (t.main||'') : (t.followups[TAB-1]||'');
+  $('#subj').style.display = TAB===0?'block':'none';
+}
+document.querySelectorAll('#ttabs span').forEach(sp=>sp.onclick=()=>{
+  TAB=+sp.dataset.t; document.querySelectorAll('#ttabs span').forEach(x=>x.classList.toggle('on',x===sp)); loadTab(); renderPrev();
+});
+function mergePrev(text,p){
+  return (text||'').replace(/\{\{\s*([a-z_]+)\s*(?:\|\s*([^}]*?))?\s*\}\}/g,(m,k,f)=>{
+    const v={first_name:p.name.split(' ')[0],last_name:p.name.split(' ').slice(1).join(' '),
+             title:p.title||'',company:PREVIEW.company||'',connection:p.alumni_note||''};
+    return (v[k]||f||'').trim();
+  }).replace(/[ \t]{2,}/g,' ').trim();
+}
+function renderPrev(){
+  const p=PREVIEW.people.find(x=>x.contact_id==$('#who').value)||PREVIEW.people[0]; if(!p)return;
+  const t=tmpl(); const raw = TAB===0?t.main:(t.followups[TAB-1]||'');
+  const body=mergePrev(raw,p);
+  const subj = TAB===0?t.subject:('Re: '+t.subject);
+  $('#prev').innerHTML=`<div class="muted" style="margin-bottom:8px"><b>To:</b> ${p.name} &lt;${p.email||'—'}&gt;</div>
+    <div style="margin-bottom:8px"><b>${subj||''}</b></div>
+    <div>Hi ${p.name.split(' ')[0]},</div><br>${body.split('\n').map(x=>`<div>${x}</div>`).join('')}`;
+}
+$('#who').onchange=renderPrev;
+$('#tbody').oninput=()=>{const t=tmpl(); if(TAB===0)t.main=$('#tbody').value; else t.followups[TAB-1]=$('#tbody').value; renderPrev();};
+$('#subj').oninput=()=>{tmpl().subject=$('#subj').value; renderPrev();};
+
+$('#applyBtn').onclick=async()=>{
+  const t=tmpl();
+  const r=await api('/api/templates/'+CAMPAIGN,{method:'PATCH',body:JSON.stringify({subject:t.subject,main:t.main,followups:t.followups})});
+  PREVIEW=r; renderReview(); alert('Saved ✓');
+};
+$('#regenBtn').onclick=async()=>{
+  const ins=$('#tweak').value.trim();
+  $('#regenBtn').disabled=true;$('#regenBtn').textContent='Rewriting…';
+  const r=await api('/api/generate',{method:'POST',body:JSON.stringify({campaign_id:CAMPAIGN,instruction:ins})});
+  PREVIEW=r; renderReview();
+  $('#regenBtn').disabled=false;$('#regenBtn').textContent='↻ Regenerate with instruction';
+};
+$('#resume').onchange=async e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const fd=new FormData(); fd.append('file',f);
+  const r=await fetch(API_BASE+'/api/resume/'+CAMPAIGN,{method:'POST',body:fd}).then(x=>x.json());
+  $('#resumeLbl').textContent='📎 '+r.name+' attached (sent on reply) ✓';
+};
+$('#releaseBtn').onclick=async()=>{
+  if(!confirm('Release the sequence? Emails will drip out safely within your sending window.'))return;
+  const gaps=[+$('#fu1').value||3,+$('#fu2').value||4];
+  const r=await api('/api/release/'+CAMPAIGN,{method:'POST',body:JSON.stringify({followup_gaps:gaps})});
+  if(r.queued===0){alert('Nothing queued — none of the selected people have an unlocked email yet.');return;}
+  alert('Released — '+r.queued+' main emails queued. Track them in the Dashboard.');
+  document.querySelector('.tab[data-view=dash]').click();
+};
+
+// ---------- dashboard ----------
+async function loadDashboard(){
+  loadStatus();
+  const {campaigns}=await api('/api/campaigns');
+  const root=$('#campaigns'); root.innerHTML = campaigns.length?'':'<p class="muted">No campaigns yet.</p>';
+  for(const c of campaigns){
+    const d=document.createElement('details');
+    d.innerHTML=`<summary>${c.company||'—'} <span class="muted">· ${c.role||''}</span>
+      <span class="pill" style="margin-left:8px">${c.status}</span>
+      <span class="muted" style="float:right">✉ ${c.sent} · 👁 ${c.opened} · ↩ ${c.replied}</span></summary>
+      <div class="row" style="margin:10px 0">
+        <button class="ghost sm" onclick="ctl(${c.id},'pause')">⏸ Pause</button>
+        <button class="ghost sm" onclick="ctl(${c.id},'resume')">▶ Resume</button>
+        <button class="ghost sm" onclick="ctl(${c.id},'stop')">⏹ Stop</button>
+      </div>
+      <div id="cs-${c.id}" class="muted">loading…</div>`;
+    d.ontoggle=()=>{ if(d.open) loadCampaign(c.id); };
+    root.appendChild(d);
+  }
+  loadReplies();
+}
+async function loadCampaign(id){
+  const {rows}=await api('/api/campaign/'+id+'/status');
+  const color={sent:'#1aa260',scheduled:'#2f6bff',draft:'#9aa0a6',failed:'#d23b3b',skipped:'#b9770a',stopped:'#9aa0a6'};
+  let h='<table><thead><tr><th>Recipient</th><th>Step</th><th>Status</th><th>Sent</th><th>Opened</th><th></th></tr></thead><tbody>';
+  rows.forEach(x=>{h+=`<tr><td>${x.name}<br><span class="muted">${x.email||''}</span></td>
+    <td>${x.seq===0?'Main':'FU '+x.seq}</td>
+    <td><span class="dot" style="background:${color[x.status]||'#888'}"></span>${x.status}${x.error?` <span class="muted">(${x.error})</span>`:''}</td>
+    <td class="muted">${(x.sent_at||'').slice(0,16).replace('T',' ')}</td>
+    <td>${x.open_count?'✓ '+x.open_count+'×':'—'}</td>
+    <td>${x.seq===0&&x.contact_status==='active'?`<button class="ghost sm" onclick="stopC(${x.contact_id})">stop</button>`:''}</td></tr>`;});
+  h+='</tbody></table>';
+  $('#cs-'+id).innerHTML=h;
+}
+async function loadReplies(){
+  const {replies}=await api('/api/replies');
+  const root=$('#replies'); if(!replies.length){root.innerHTML='<p class="muted">No replies yet.</p>';return;}
+  root.innerHTML='';
+  replies.forEach(r=>{
+    const div=document.createElement('div'); div.className='prev'; div.style.marginBottom='10px';
+    div.innerHTML=`<div class="row between"><b>${r.name} · ${r.company}</b><span class="pill">${r.intent||'…'}</span></div>
+      <p class="muted">“${r.snippet||''}”</p>
+      <textarea id="rd-${r.id}" style="min-height:90px">${r.draft||''}</textarea>
+      <div class="row" style="margin-top:8px"><button class="sm" onclick="sendReply(${r.id})">Send reply + resume</button>
+      <button class="ghost sm" onclick="dismissReply(${r.id})">Dismiss</button></div>`;
+    root.appendChild(div);
+  });
+}
+window.ctl=async(id,a)=>{await api('/api/campaign/'+id+'/'+a,{method:'POST'});loadDashboard();};
+window.stopC=async(id)=>{await api('/api/contact/'+id+'/stop',{method:'POST'});loadDashboard();};
+window.sendReply=async(id)=>{const r=await api('/api/reply/'+id+'/send',{method:'POST'});alert(r.ok?('Sent ✓'+(r.attached_resume?' (resume attached)':'')):'Error: '+r.error);loadReplies();};
+window.dismissReply=async(id)=>{await api('/api/reply/'+id+'/dismiss',{method:'POST'});loadReplies();};
+$('#refreshBtn').onclick=loadDashboard;
+$('#tickBtn').onclick=async()=>{
+  let sec=localStorage.getItem('cron_secret'); if(!sec){sec=prompt('CRON_SECRET (from your .env):')||'';localStorage.setItem('cron_secret',sec);}
+  const r=await api('/cron/tick?secret='+encodeURIComponent(sec),{method:'POST'});
+  alert('Tick: '+JSON.stringify(r)); loadDashboard();
+};
+
+loadStatus();
+</script>
+</body>
+</html>
