@@ -22,7 +22,13 @@ STATIC = Path(__file__).parent / "static"
 
 @app.on_event("startup")
 def _startup():
-    init_db()
+    # Non-fatal: bind the port even if the DB is briefly unreachable so Render
+    # doesn't kill the service. Schema is (re)ensured lazily on the cron tick.
+    import logging
+    try:
+        init_db()
+    except Exception as e:
+        logging.getLogger("uvicorn.error").error(f"init_db failed at startup: {e}")
 
 
 # ---------- models ----------
@@ -182,6 +188,10 @@ def pixel(tracking_id: str, request: Request):
 def cron_tick(secret: str = ""):
     if secret != cfg.CRON_SECRET:
         raise HTTPException(403, "bad secret")
+    try:
+        init_db()   # idempotent — ensures schema once DB is reachable
+    except Exception:
+        pass
     try:
         replies.process_new_replies()
     except Exception:
