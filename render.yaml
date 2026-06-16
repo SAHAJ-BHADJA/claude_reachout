@@ -10,6 +10,8 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
+      - key: PYTHON_VERSION        # 3.14 has no prebuilt wheels for these deps
+        value: "3.12.8"
       - key: DATABASE_URL          # Supabase Postgres connection URI
         sync: false
       - key: ANTHROPIC_API_KEY
