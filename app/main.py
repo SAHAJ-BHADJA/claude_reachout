@@ -169,15 +169,23 @@ def reply_dismiss(rid: int):
 # ---------- tracking pixel ----------
 @app.get("/t/o/{tracking_id}.gif")
 def pixel(tracking_id: str, request: Request):
+    from datetime import timezone
     with session() as s:
         e = s.execute(select(EmailMsg).where(EmailMsg.tracking_id == tracking_id)).scalars().first()
         if e:
-            e.open_count = (e.open_count or 0) + 1
-            e.opened_at = e.opened_at or utcnow()
-            s.add(Event(email_id=e.id, type="open",
-                        user_agent=request.headers.get("user-agent", "")[:300],
-                        ip=request.client.host if request.client else ""))
-            s.commit()
+            # Ignore "opens" within 60s of sending — those are mail-server/image-proxy
+            # pre-fetches (e.g. Google's GoogleImageProxy), not a real human read.
+            sa = e.sent_at
+            if sa is not None and sa.tzinfo is None:
+                sa = sa.replace(tzinfo=timezone.utc)
+            prefetch = bool(sa) and (utcnow() - sa).total_seconds() < 60
+            if not prefetch:
+                e.open_count = (e.open_count or 0) + 1
+                e.opened_at = e.opened_at or utcnow()
+                s.add(Event(email_id=e.id, type="open",
+                            user_agent=request.headers.get("user-agent", "")[:300],
+                            ip=request.client.host if request.client else ""))
+                s.commit()
     return Response(content=tracking.PIXEL_GIF, media_type="image/gif",
                     headers={"Cache-Control": "no-store, no-cache, must-revalidate, private",
                              "Pragma": "no-cache", "Expires": "0"})
