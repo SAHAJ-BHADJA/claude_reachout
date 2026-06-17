@@ -61,14 +61,15 @@ class Config:
     SEND_HOUR_START = int(_g("SEND_HOUR_START", "9"))
     SEND_HOUR_END = int(_g("SEND_HOUR_END", "17"))
     MIN_GAP_SECONDS = int(_g("MIN_GAP_SECONDS", "420"))      # ~7 min between sends
-    DAILY_HARD_CAP = int(_g("DAILY_HARD_CAP", "40"))
-    # warmup ramp: emails allowed per day by age of sending (days since first send)
-    WARMUP_RAMP = [10, 10, 10, 20, 20, 20, 20, 30, 30, 30, 30, 30, 30, 30]  # then DAILY_HARD_CAP
+    DAILY_HARD_CAP = int(_g("DAILY_HARD_CAP", "50"))
+    # warmup ramp: emails/day by age of sending (days since first send). Short ramp
+    # because this is an established, regularly-used inbox; then DAILY_HARD_CAP.
+    WARMUP_RAMP = [30, 40, 50]  # then DAILY_HARD_CAP (50)
 
     # ---- Lead caps + how many to actually email ----
     APIFY_FETCH = int(_g("APIFY_FETCH", "30"))
     APOLLO_FETCH = int(_g("APOLLO_FETCH", "20"))
-    EMAIL_TOP_N = int(_g("EMAIL_TOP_N", "6"))                # email the best N per company
+    EMAIL_TOP_N = int(_g("EMAIL_TOP_N", "20"))               # email the best N per company
 
     # ---- Follow-up cadence (business days after previous, if no reply) ----
     FOLLOWUP_GAP_DAYS = [int(x) for x in _g("FOLLOWUP_GAP_DAYS", "3,4").split(",")]

@@ -29,7 +29,7 @@ services:
       - key: APIFY_ACTOR_ID
         value: IoSHqwTR9YGhzccez
       - key: EMAIL_TOP_N
-        value: "6"
+        value: "20"
       - key: GOOGLE_CLIENT_ID
         sync: false
       - key: GOOGLE_CLIENT_SECRET

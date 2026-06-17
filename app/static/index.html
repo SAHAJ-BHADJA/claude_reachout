@@ -75,7 +75,7 @@
     <div class="step">Step 1 · Source &amp; JD</div>
     <div class="row between">
       <div class="row"><span class="muted">Source</span>
-        <div class="toggle" id="src"><div data-s="hunter" class="on">Hunter (free)</div><div data-s="apollo">Apollo (20)</div><div data-s="apify">Apify (30)</div></div>
+        <div class="toggle" id="src"><div data-s="hunter" class="on">Hunter</div><div data-s="apollo">Apollo</div><div data-s="apify">Apify</div></div>
       </div>
       <span class="muted" id="capnote"></span>
     </div>
@@ -180,7 +180,7 @@ async function loadStatus(){
   if(!s.gmail_authorized) h+=`<div class="banner b-warn">⚠ Gmail not connected — <a href="/gmail/auth" target="_blank">Connect Gmail</a> to send &amp; track.</div>`;
   if(s.gmail_authorized&&s.master_data) h+=`<div class="banner b-ok">✓ Ready. Sending as ${s.sender}. Tracking via ${s.tracking_base_url}</div>`;
   $('#setup').innerHTML=h;
-  $('#capnote').textContent=`Emails the top ${s.caps.email_top_n} per company`;
+  $('#capnote').textContent='';
 }
 
 $('#src').onclick=e=>{const d=e.target.closest('[data-s]');if(!d)return;SOURCE=d.dataset.s;

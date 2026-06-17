@@ -28,6 +28,23 @@ def _departments(filters: dict) -> str:
     return ",".join(sorted(out))
 
 
+# Best-effort US filter: Hunter has no per-person country, so we drop people whose
+# title clearly marks a non-US region. Not airtight (untagged foreign staff slip through).
+NON_US_MARKERS = [
+    "emea", "apac", "latam", " lac", "lac ", "mena", " anz", "dach", "benelux", "nordic",
+    "asia", "pacific", "europe", "european", "middle east", "africa", "latin america",
+    "caribbean", "india", "u.k.", " uk ", "uk)", "united kingdom", "ireland", "germany",
+    "france", "spain", "italy", "netherlands", "brazil", "mexico", "canada", "canadian",
+    "australia", "singapore", "japan", "china", "hong kong", "dubai", "uae", "poland",
+    "romania", "philippines", "argentina", "colombia", "south africa", "switzerland",
+]
+
+
+def _us_likely(e: dict) -> bool:
+    text = f"{e.get('position') or ''} {e.get('position_raw') or ''}".lower()
+    return not any(m in text for m in NON_US_MARKERS)
+
+
 def normalise(e: dict, org: str, domain: str) -> dict:
     return {
         "first_name": e.get("first_name") or "",
@@ -71,4 +88,8 @@ def search(filters: dict, limit: int | None = None) -> list[dict]:
     data = r.json().get("data", {})
     org = data.get("organization") or ""
     dom = data.get("domain") or domain
-    return [normalise(e, org, dom) for e in data.get("emails", []) if e.get("value")]
+    emails = [e for e in data.get("emails", []) if e.get("value")]
+    us = [e for e in emails if _us_likely(e)]
+    # If the US filter removes everyone (over-aggressive), fall back to all.
+    chosen = us if us else emails
+    return [normalise(e, org, dom) for e in chosen]
