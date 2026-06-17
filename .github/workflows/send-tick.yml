@@ -1,21 +1,24 @@
 name: send-tick
 
-# Pings the app's /cron/tick every 5 minutes so queued emails send automatically
-# (respecting the throttle, daily cap, and sending window) with no laptop needed.
-# GitHub Actions is free for public repos. CRON_SECRET is a repo secret (never in code).
+# Backup pinger. GitHub's scheduler is unreliable/laggy, so each run loops and
+# pings several times to cover more time. For RELIABLE keep-awake + sending, use
+# cron-job.org pinging /cron/tick every 5 min (see README). CRON_SECRET is a repo secret.
 
 on:
   schedule:
     - cron: "*/5 * * * *"
-  workflow_dispatch: {}   # lets you run it manually too
+  workflow_dispatch: {}
 
 jobs:
   tick:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping send tick
+      - name: Ping send tick repeatedly
         run: |
-          curl -s -m 60 -X POST \
-            "https://claude-reachout.onrender.com/cron/tick?secret=${{ secrets.CRON_SECRET }}" \
-            -o response.txt -w "HTTP %{http_code}\n" || true
-          echo "Response:"; cat response.txt || true
+          for i in 1 2 3 4 5 6; do
+            curl -s -m 90 -X POST \
+              "https://claude-reachout.onrender.com/cron/tick?secret=${{ secrets.CRON_SECRET }}" \
+              -o r.txt -w "ping $i -> HTTP %{http_code} " || true
+            cat r.txt 2>/dev/null; echo
+            sleep 50
+          done
